@@ -1,0 +1,3 @@
+Line: 0 Column: 0 Type: Identifier Value: hello
+Line: 0 Column: 6 Type: Identifier Value: bonjour
+Line: 0 Column: 14 Type: UnsignedInteger Value: 123

@@ -1,0 +1,5 @@
+[jobs.miniplc0]
+build = {source = "dockerfile", path = "."}
+run = [
+  "java -jar build/libs/miniplc0java.jar -t $input -o $output",
+]
