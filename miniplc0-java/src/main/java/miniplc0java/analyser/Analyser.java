@@ -202,7 +202,20 @@ public final class Analyser {
         expect(TokenType.EOF);
     }
 
+    /**
+     * <主过程> ::= <常量声明><变量声明><语句序列>
+     * @throws CompileError
+     */
     private void analyseMain() throws CompileError {
+        //常量声明
+        analyseConstantDeclaration();
+
+        //变量声明
+        analyseVariableDeclaration();
+
+        //语句序列
+        analyseStatementSequence();
+
         //throw new Error("Not implemented");
     }
 
