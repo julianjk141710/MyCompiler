@@ -30,8 +30,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="package.json" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -96,7 +96,7 @@
       <workItem from="1602892608380" duration="16831000" />
       <workItem from="1603174628745" duration="384000" />
       <workItem from="1603182448158" duration="855000" />
-      <workItem from="1603184293848" duration="4567000" />
+      <workItem from="1603184293848" duration="22056000" />
     </task>
     <servers />
   </component>
