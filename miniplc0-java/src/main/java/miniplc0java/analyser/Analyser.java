@@ -30,7 +30,7 @@ public final class Analyser {
     /** 下一个变量的栈偏移 */
     int nextOffset = 0;
 
-    int PrintFlag = 0;
+//    int PrintFlag = 0;
 
     public Analyser(Tokenizer tokenizer) {
         this.tokenizer = tokenizer;
@@ -409,9 +409,9 @@ public final class Analyser {
     private void analyseOutputStatement() throws CompileError {
         expect(TokenType.Print);
         expect(TokenType.LParen);
-        PrintFlag = 1;
+        //PrintFlag = 1;
         analyseExpression();
-        PrintFlag = 0;
+        //PrintFlag = 0;
         expect(TokenType.RParen);
         expect(TokenType.Semicolon);
         instructions.add(new Instruction(Operation.WRT));
@@ -458,12 +458,14 @@ public final class Analyser {
             //如果该变量未声明过
             if (!symbolTable.containsKey(nameToken.getValue())) {
                 throw new AnalyzeError(ErrorCode.NotDeclared, nameToken.getStartPos());
+            } else if (!symbolTable.get(nameToken.getValue()).isInitialized()) {
+                throw new AnalyzeError(ErrorCode.NotInitialized, nameToken.getStartPos());
             }
             int offsetForStack = getOffset((String)nameToken.getValue(), nameToken.getStartPos());
-            if (PrintFlag == 0) {
-                instructions.add(new Instruction(Operation.LOD, offsetForStack));
-            }
-
+//            if (PrintFlag == 0) {
+//                instructions.add(new Instruction(Operation.LOD, offsetForStack));
+//            }
+            instructions.add(new Instruction(Operation.LOD, offsetForStack));
             //int alpha = ;
             //INteruction.add(lit, alpha.value)
         } else if (check(TokenType.Uint)) {
