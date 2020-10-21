@@ -256,31 +256,30 @@ public final class Analyser {
     /**
      * 变量声明
      * <变量声明> ::= {<变量声明语句>}
-     * <变量声明语句> ::= 'var'<标识符>['='<表达式>';']
+     * <变量声明语句> ::= 'var'<标识符>['='<表达式>]';'
      * @throws CompileError
      */
     private void analyseVariableDeclaration() throws CompileError {
         while (nextIf(TokenType.Var) != null) {
             // 变量名 (即文法中所说的标识符)
             var nameToken = expect(TokenType.Ident);
-
             //如果这是第二次声明该变量
             if (symbolTable.containsKey(nameToken.getValue())) {
                 throw new Error("Not implemented");
             }
             //处理可选项
-            // ['='<表达式>';']
+            // ['='<表达式>]';'
             if (nextIf(TokenType.Equal) != null) {
                 //表达式
                 analyseExpression();
                 //分号
                 expect(TokenType.Semicolon);
                 addSymbol(String.valueOf(nameToken.getValue()), true, false, nameToken.getStartPos());
-
+                continue;
             }
-
             //分号
             expect(TokenType.Semicolon);
+
             addSymbol(String.valueOf(nameToken.getValue()), false, false, nameToken.getStartPos());
 
 
@@ -464,7 +463,9 @@ public final class Analyser {
             //int beta = xx;
         } else if (check(TokenType.LParen)) {
             // 调用相应的处理函数
+            expect(TokenType.LParen);
             analyseExpression();
+            expect(TokenType.RParen);
         } else {
             // 都不是，摸了
             throw new ExpectedTokenError(List.of(TokenType.Ident, TokenType.Uint, TokenType.LParen), next());
