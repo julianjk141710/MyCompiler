@@ -14,6 +14,8 @@ import miniplc0java.util.Pos;
 
 import java.util.*;
 
+import static miniplc0java.error.ErrorCode.DuplicateDeclaration;
+
 public final class Analyser {
 
     Tokenizer tokenizer;
@@ -133,7 +135,7 @@ public final class Analyser {
      */
     private void addSymbol(String name, boolean isInitialized, boolean isConstant, Pos curPos) throws AnalyzeError {
         if (this.symbolTable.get(name) != null) {
-            throw new AnalyzeError(ErrorCode.DuplicateDeclaration, curPos);
+            throw new AnalyzeError(DuplicateDeclaration, curPos);
         } else {
             this.symbolTable.put(name, new SymbolEntry(isConstant, isInitialized, getNextVariableOffset()));
         }
@@ -236,8 +238,9 @@ public final class Analyser {
             // 变量名 (即文法中所说的标识符)
             var nameToken = expect(TokenType.Ident);
 
+            //如果已经声明过这个常量
             if (symbolTable.containsKey(nameToken.getValue())) {
-                throw new Error("Not implemented");
+                throw new AnalyzeError(DuplicateDeclaration, nameToken.getStartPos());
             }
             // 等于号
             expect(TokenType.Equal);
@@ -267,7 +270,7 @@ public final class Analyser {
             var nameToken = expect(TokenType.Ident);
             //如果这是第二次声明该变量
             if (symbolTable.containsKey(nameToken.getValue())) {
-                throw new Error("Not implemented");
+                throw new AnalyzeError(DuplicateDeclaration, nameToken.getStartPos());
             }
             //处理可选项
             // ['='<表达式>]';'
@@ -315,7 +318,7 @@ public final class Analyser {
         } else if (check(TokenType.Semicolon)) {
             next();
         } else {
-            throw new Error("Not implemented");
+            throw new AnalyzeError(ErrorCode.InvalidInput, next().getStartPos());
         }
         //throw new Error("Not implemented");
     }
@@ -372,9 +375,9 @@ public final class Analyser {
 
         //如果没有这个变量 或者 这个变量是一个常量的话 抛异常
         if ( ! symbolTable.containsKey(nameToken.getValue())) {
-            throw new Error("Not implemented");
+            throw new AnalyzeError(ErrorCode.NotDeclared, nameToken.getStartPos());
         } else if (isConstant(String.valueOf(nameToken.getValue()), nameToken.getStartPos())) {
-            throw new Error("Not implemented");
+            throw new AnalyzeError(ErrorCode.AssignToConstant ,nameToken.getStartPos());
         }
         //等号
         expect(TokenType.Equal);
@@ -452,8 +455,9 @@ public final class Analyser {
         if (check(TokenType.Ident)) {
             // 调用相应的处理函数
             var nameToken = next();
+            //如果该变量未声明过
             if (!symbolTable.containsKey(nameToken.getValue())) {
-                throw new Error("Not implemented");
+                throw new AnalyzeError(ErrorCode.NotDeclared, nameToken.getStartPos());
             }
             int offsetForStack = getOffset((String)nameToken.getValue(), nameToken.getStartPos());
             if (PrintFlag == 0) {

@@ -1,4 +1,8 @@
 begin
 var a = 1;
-Var a = 2;
+var b = 2;
+var c;
+c = a + b;
+
+
 end

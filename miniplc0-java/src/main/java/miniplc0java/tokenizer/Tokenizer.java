@@ -113,15 +113,15 @@ public class Tokenizer {
 
             case '-':
                 // 填入返回语句
-                return new Token(TokenType.Plus, '-', it.previousPos(), it.currentPos());
+                return new Token(TokenType.Minus, '-', it.previousPos(), it.currentPos());
 
             case '*':
                 // 填入返回语句
-                return new Token(TokenType.Plus, '*', it.previousPos(), it.currentPos());
+                return new Token(TokenType.Mult, '*', it.previousPos(), it.currentPos());
 
             case '/':
                 // 填入返回语句
-                return new Token(TokenType.Plus, '/', it.previousPos(), it.currentPos());
+                return new Token(TokenType.Div, '/', it.previousPos(), it.currentPos());
 
             case ';':
                 // 填入返回语句
