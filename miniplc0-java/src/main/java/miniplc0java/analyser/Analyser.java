@@ -28,6 +28,8 @@ public final class Analyser {
     /** 下一个变量的栈偏移 */
     int nextOffset = 0;
 
+    int PrintFlag = 0;
+
     public Analyser(Tokenizer tokenizer) {
         this.tokenizer = tokenizer;
         this.instructions = new ArrayList<>();
@@ -404,7 +406,9 @@ public final class Analyser {
     private void analyseOutputStatement() throws CompileError {
         expect(TokenType.Print);
         expect(TokenType.LParen);
+        PrintFlag = 1;
         analyseExpression();
+        PrintFlag = 0;
         expect(TokenType.RParen);
         expect(TokenType.Semicolon);
         instructions.add(new Instruction(Operation.WRT));
@@ -452,7 +456,10 @@ public final class Analyser {
                 throw new Error("Not implemented");
             }
             int offsetForStack = getOffset((String)nameToken.getValue(), nameToken.getStartPos());
-            instructions.add(new Instruction(Operation.LOD, offsetForStack));
+            if (PrintFlag == 0) {
+                instructions.add(new Instruction(Operation.LOD, offsetForStack));
+            }
+
             //int alpha = ;
             //INteruction.add(lit, alpha.value)
         } else if (check(TokenType.Uint)) {

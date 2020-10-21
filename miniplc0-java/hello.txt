@@ -1,4 +1,4 @@
 begin
 var a = 1;
-print(a);
+Var a = 2;
 end
