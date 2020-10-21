@@ -241,7 +241,7 @@ public final class Analyser {
             expect(TokenType.Equal);
 
             // 常表达式 并且返回这个整数值
-            int xForStack = analyseConstantExpression();
+            int valForStack = analyseConstantExpression();
 
             // 分号
             expect(TokenType.Semicolon);
@@ -249,7 +249,7 @@ public final class Analyser {
             //添加符号到符号表内
             addSymbol(String.valueOf(nameToken.getValue()), true, true, nameToken.getStartPos());
 
-            instructions.add(new Instruction(Operation.LIT, xForStack));
+            instructions.add(new Instruction(Operation.LIT, valForStack));
         }
     }
 
@@ -324,13 +324,18 @@ public final class Analyser {
      * @throws CompileError
      */
     private int analyseConstantExpression() throws CompileError {
+        int sign = 1;
         //可选项 符号
-        if (nextIf(TokenType.Plus) != null || nextIf(TokenType.Minus) != null);
+        if (nextIf(TokenType.Minus) != null) {
+            sign = -1;
+        } else if (nextIf(TokenType.Plus) != null){
+            sign = 1;
+        }
 
         //无符号整数
         var tokenVal = expect(TokenType.Uint);
 
-        return Integer.parseInt(String.valueOf(tokenVal.getValue()));
+        return sign * Integer.parseInt(String.valueOf(tokenVal.getValue()));
         //throw new Error("Not implemented");
     }
 
@@ -379,9 +384,14 @@ public final class Analyser {
         //分号
         expect(TokenType.Semicolon);
 
-        declareSymbol(String.valueOf(nameToken.getValue()), nameToken.getStartPos());
-        int offsetForStack = symbolTable.get(nameToken).stackOffset;
-        instructions.add(new Instruction(Operation.STO, offsetForStack));
+        if (symbolTable.get(nameToken.getValue()).isInitialized) {
+            instructions.add(new Instruction(Operation.STO, getOffset((String)nameToken.getValue(), nameToken.getStartPos())));
+        } else {
+            declareSymbol(String.valueOf(nameToken.getValue()), nameToken.getStartPos());
+        }
+//        declareSymbol(String.valueOf(nameToken.getValue()), nameToken.getStartPos());
+//        int offsetForStack = symbolTable.get(nameToken).stackOffset;
+//        instructions.add(new Instruction(Operation.STO, offsetForStack));
         //throw new Error("Not implemented");
     }
 
@@ -442,7 +452,7 @@ public final class Analyser {
             if (!symbolTable.containsKey(nameToken.getValue())) {
                 throw new Error("Not implemented");
             }
-            int offsetForStack = symbolTable.get(nameToken.getValue()).stackOffset;
+            int offsetForStack = getOffset((String)nameToken.getValue(), nameToken.getStartPos());
             instructions.add(new Instruction(Operation.LOD, offsetForStack));
             //int alpha = ;
             //INteruction.add(lit, alpha.value)
